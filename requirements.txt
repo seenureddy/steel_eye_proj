@@ -1,0 +1,10 @@
+
+click
+mdutils
+
+lxml
+requests
+numpy
+pandas
+aiohttp
+async_timeout
