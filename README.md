@@ -3,13 +3,13 @@
 https://github.com/steeleye/recruitment-ext/wiki/Python-Engineer-Assessment
 
 * Create the virtual env for the project using the requirements
-``python -m venv pps-env```
+``python -m venv ste-env```
   
 * On Windows
- ```pps-env\Scripts\activate.bat```
+ ```ste-env\Scripts\activate.bat```
   
 * On Linux or Mac
-```source pps-env/bin/activate```
+```source ste-env/bin/activate```
   
 * Change the directory to project path
 ```cd <project_path_location>```
