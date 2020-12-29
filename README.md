@@ -18,7 +18,7 @@ https://github.com/steeleye/recruitment-ext/wiki/Python-Engineer-Assessment
 ```pip install -r requirements.txt```
   
 * Run the project
-```python steel_eye_dir/steeleye_ext.py```
+```python steeleye_dir/steeleye_ext.py```
   
 * Check the `steel_eye_file_dir` in `steel_eye_proj` directory. This `steel_eye_file_dir`
 will have all the `csv file data` and download `xml` files.

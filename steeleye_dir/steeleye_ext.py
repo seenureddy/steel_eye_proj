@@ -26,55 +26,61 @@ def csv_file_write(csv_file_name, data_list):
     with open(csv_file_name, 'w') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        print(data_list)
+        # print(data_list)
         for data_dict in data_list:
             writer.writerow({k: data_dict.get(k) for k in fieldnames})
 
 
 def child_read_xml_file(dir_path, file_name):
-    csv_file_name = f"{dir_path}/{str(uuid.uuid4())}.csv"
+    try:
+        csv_file_name = f"{dir_path}/{str(uuid.uuid4())}.csv"
 
-    tree = ET.parse(file_name)
-    root = tree.getroot()
-    # printing the root (parent) tag
-    # of the xml document, along with
-    # its memory location
-    print(root, csv_file_name)
-    childrens = root.findall(".")[0].getchildren()[1].getchildren()[0].getchildren()[0].getchildren()
-    print("checking the sub tags wait .........")
-    sub_sub_children_list = list()
-    for index, sub_children in enumerate(childrens):
-        if index >= 1:
-            for index1, sub_sub_children in enumerate(sub_children.getchildren()):
-                sub_sub_children_dict = dict()
-                if index1 == 0:
-                    for sub_sub_sub_children in sub_sub_children.findall('{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}FinInstrmGnlAttrbts'):
-                        for index2, child in enumerate(sub_sub_sub_children):
-                            if child.tag == '{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}ShrtNm':
-                                continue
-                            else:
-                                sub_sub_children_dict[
-                                    child.tag.replace('{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}', 'FinInstrmGnlAttrbts.')
-                                ] = child.text
-                elif index == 1:
-                    for sub_children in sub_sub_children[index].findall('{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}Issr'):
-                        sub_sub_children_dict[
-                            sub_children.tag.replace('{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}', '')] = sub_children.text
-                else:
-                    continue
-                sub_sub_children_list.append(sub_sub_children_dict)
+        tree = ET.parse(file_name)
+        root = tree.getroot()
+        # printing the root (parent) tag
+        # of the xml document, along with
+        # its memory location
+        print(root, csv_file_name)
+        childrens = root.findall(".")[0].getchildren()[1].getchildren()[0].getchildren()[0].getchildren()
+        print("checking the sub tags wait .........")
+        sub_sub_children_list = list()
+        for index, sub_children in enumerate(childrens):
+            if index >= 1:
+                for index1, sub_sub_children in enumerate(sub_children.getchildren()):
+                    sub_sub_children_dict = dict()
+                    if index1 == 0:
+                        for sub_sub_sub_children in sub_sub_children.findall('{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}FinInstrmGnlAttrbts'):
+                            for index2, child in enumerate(sub_sub_sub_children):
+                                if child.tag == '{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}ShrtNm':
+                                    continue
+                                else:
+                                    sub_sub_children_dict[
+                                        child.tag.replace('{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}', 'FinInstrmGnlAttrbts.')
+                                    ] = child.text
+                    elif index == 1:
+                        for sub_children in sub_sub_children[index].findall('{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}Issr'):
+                            sub_sub_children_dict[
+                                sub_children.tag.replace('{urn:iso:std:iso:20022:tech:xsd:auth.036.001.02}', '')] = sub_children.text
+                    else:
+                        continue
+                    sub_sub_children_list.append(sub_sub_children_dict)
 
-        else:
-            continue
-    # print("sub_sub_children_dict", sub_sub_children_dict)
-    csv_file_write(csv_file_name=csv_file_name, data_list=sub_sub_children_list)
+            else:
+                continue
+        # print("sub_sub_children_dict", sub_sub_children_dict)
+        csv_file_write(csv_file_name=csv_file_name, data_list=sub_sub_children_list)
+    except Exception:
+        print("Run the project with virtual environment")
 
 
 def file_parse(dir_path, file_lists):
     for file_name in file_lists:
         print("file-name", file_name)
-        child_read_xml_file(dir_path, file_name)
-        # child_read_xml_file(dir_path, file_lists[0])
+        try:
+            child_read_xml_file(dir_path, file_name)
+            # child_read_xml_file(dir_path, file_lists[0])
+        except Exception:
+            print("Run the project with virtual environment")
 
 
 def read_xml_file(file_name):
@@ -104,7 +110,7 @@ def run(urls, is_child_url):
 
 def create_dir():
     try:
-        directory = "steel_eye_dir"
+        directory = "steel_eye_file_dir"
         path = os.path.join(os.getcwd(), directory)
         os.mkdir(path)
     except FileExistsError:
@@ -167,6 +173,10 @@ if __name__ == '__main__':
     down_urls = ['https://registers.esma.europa.eu/solr/esma_registers_firds_files/select?q=*&fq=publication_date:%5B2020-01-08T00:00:00Z+TO+2020-01-08T23:59:59Z%5D&wt=xml&indent=true&start=0&rows=100' ]  # noqa
     zip_urls = run(down_urls, is_child_url=False)
     dir_path = run(zip_urls, is_child_url=True)
+    dir_path = None
+    if not dir_path:
+        print("directory-path is not found")
+        exit(1)
     file_lists = get_list_files(dir_path, file_list=list())
     print("file_lists", file_lists)
     file_parse(dir_path, file_lists)
