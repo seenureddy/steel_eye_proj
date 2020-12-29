@@ -173,7 +173,6 @@ if __name__ == '__main__':
     down_urls = ['https://registers.esma.europa.eu/solr/esma_registers_firds_files/select?q=*&fq=publication_date:%5B2020-01-08T00:00:00Z+TO+2020-01-08T23:59:59Z%5D&wt=xml&indent=true&start=0&rows=100' ]  # noqa
     zip_urls = run(down_urls, is_child_url=False)
     dir_path = run(zip_urls, is_child_url=True)
-    dir_path = None
     if not dir_path:
         print("directory-path is not found")
         exit(1)
